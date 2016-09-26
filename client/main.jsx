@@ -9,26 +9,37 @@ const contentSelector = new ReactiveVar('other');
 
 const collection1 = new Mongo.Collection(null);
 const collection2 = new Mongo.Collection(null);
+const collection3 = new Mongo.Collection(null);
 
 for (let i = 0; i < 1000; i++) {
-  let row1 = [];
-  let row2 = [];
+  const row1 = [];
+  const row2 = [];
+  const row3 = [];
   for (let j = 0; j < 10; j++) {
-    row1.push({
+    let doc1 = {
       _id: Random.id(),
       cell: {
         value: Random.id()
       }
-    });
-    row2.push({
+    };
+    let doc2 = {
       _id: Random.id(),
       cell: {
         value: Random.id()
       }
-    });
+    };
+    row1.push(doc1);
+    row2.push(doc2);
+    if (j % 2 === 0) {
+      row3.push(doc1);
+    }
+    else {
+      row3.push(doc2);      
+    }
   }
   collection1.insert({row: row1, order: i});
   collection2.insert({row: row2, order: i});
+  collection3.insert({row: row3, order: i});
 }
 
 class TableCell extends React.Component {
@@ -89,6 +100,9 @@ const TableContainer = createContainer(() => {
   else if (contentSelector.get() === 'table2react') {
     collection = collection2;
   }
+  else if (contentSelector.get() === 'table3react') {
+    collection = collection3;
+  }
   return {
     content: collection.find({}, {sort: {order: 1}}).fetch()
   }
@@ -116,7 +130,7 @@ Template.content.helpers({
   },
 
   selectedReact() {
-    return contentSelector.get() === 'table1react' || contentSelector.get() === 'table2react';
+    return contentSelector.get() === 'table1react' || contentSelector.get() === 'table2react' || contentSelector.get() === 'table3react';
   }
 });
 
@@ -125,6 +139,10 @@ Template.table1.onRendered(function () {
 });
 
 Template.table2.onRendered(function () {
+  logTime();
+});
+
+Template.table3.onRendered(function () {
   logTime();
 });
 
@@ -141,6 +159,12 @@ Template.table1.helpers({
 Template.table2.helpers({
   content() {
     return collection2.find({}, {sort: {order: 1}});
+  }
+});
+
+Template.table3.helpers({
+  content() {
+    return collection3.find({}, {sort: {order: 1}});
   }
 });
 
@@ -173,6 +197,15 @@ Template.table2manual.onRendered(function () {
 });
 
 Template.table2manual.onDestroyed(function () {
+  this.table.remove();
+});
+
+Template.table3manual.onRendered(function () {
+  renderTable(this, collection3);
+  logTime();
+});
+
+Template.table3manual.onDestroyed(function () {
   this.table.remove();
 });
 

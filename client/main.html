@@ -12,10 +12,13 @@
     <button class="other" type="button">Other</button>
     <button class="table1" type="button">Table 1</button>
     <button class="table2" type="button">Table 2</button>
+    <button class="table3" type="button">Table 1 & 2 mix</button>
     <button class="table1manual" type="button">Table 1 (manual)</button>
     <button class="table2manual" type="button">Table 2 (manual)</button>
+    <button class="table3manual" type="button">Table 1 & 2 mix (manual)</button>
     <button class="table1react" type="button">Table 1 (react)</button>
     <button class="table2react" type="button">Table 2 (react)</button>
+    <button class="table3react" type="button">Table 1 & 2 mix (react)</button>
   </div>
 </template>
 
@@ -27,6 +30,9 @@
     {{#if selected 'table2'}}
       {{> table2}}
     {{/if}}
+    {{#if selected 'table3'}}
+      {{> table3}}
+    {{/if}}
     {{#if selected 'other'}}
       {{> other}}
     {{/if}}
@@ -35,6 +41,9 @@
     {{/if}}
     {{#if selected 'table2manual'}}
       {{> table2manual}}
+    {{/if}}
+    {{#if selected 'table3manual'}}
+      {{> table3manual}}
     {{/if}}
     {{#if selectedReact}}
       {{> reactTables}}
@@ -47,6 +56,10 @@
 </template>
 
 <template name="table2">
+  {{> renderTable content}}
+</template>
+
+<template name="table3">
   {{> renderTable content}}
 </template>
 
@@ -80,6 +93,9 @@
 </template>
 
 <template name="table2manual">
+</template>
+
+<template name="table3manual">
 </template>
 
 <template name="reactTables">
