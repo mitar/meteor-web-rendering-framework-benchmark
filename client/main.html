@@ -14,6 +14,8 @@
     <button class="table2" type="button">Table 2</button>
     <button class="table1manual" type="button">Table 1 (manual)</button>
     <button class="table2manual" type="button">Table 2 (manual)</button>
+    <button class="table1react" type="button">Table 1 (react)</button>
+    <button class="table2react" type="button">Table 2 (react)</button>
   </div>
 </template>
 
@@ -34,6 +36,9 @@
     {{#if selected 'table2manual'}}
       {{> table2manual}}
     {{/if}}
+    {{#if selectedReact}}
+      {{> reactTables}}
+    {{/if}}
   </div>
 </template>
 
@@ -51,9 +56,11 @@
 
 <template name="renderTable">
   <table>
-    {{#each this}}
-      {{> renderTableRow row}}
-    {{/each}}
+    <tbody>
+      {{#each this}}
+        {{> renderTableRow row}}
+      {{/each}}
+    </tbody>
    </table>
 </template>
 
@@ -73,4 +80,10 @@
 </template>
 
 <template name="table2manual">
+</template>
+
+<template name="reactTables">
+  <div>
+    {{> React component=component}}
+  </div>
 </template>
