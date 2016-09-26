@@ -1,0 +1,76 @@
+<head>
+  <title>meteor-blaze-benchmark</title>
+</head>
+
+<body>
+  {{> sidebar}}
+  {{> content}}
+</body>
+
+<template name="sidebar">
+  <div class="sidebar">
+    <button class="other" type="button">Other</button>
+    <button class="table1" type="button">Table 1</button>
+    <button class="table2" type="button">Table 2</button>
+    <button class="table1manual" type="button">Table 1 (manual)</button>
+    <button class="table2manual" type="button">Table 2 (manual)</button>
+  </div>
+</template>
+
+<template name="content">
+  <div class="content">
+    {{#if selected 'table1'}}
+      {{> table1}}
+    {{/if}}
+    {{#if selected 'table2'}}
+      {{> table2}}
+    {{/if}}
+    {{#if selected 'other'}}
+      {{> other}}
+    {{/if}}
+    {{#if selected 'table1manual'}}
+      {{> table1manual}}
+    {{/if}}
+    {{#if selected 'table2manual'}}
+      {{> table2manual}}
+    {{/if}}
+  </div>
+</template>
+
+<template name="table1">
+  {{> renderTable content}}
+</template>
+
+<template name="table2">
+  {{> renderTable content}}
+</template>
+
+<template name="other">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</template>
+
+<template name="renderTable">
+  <table>
+    {{#each this}}
+      {{> renderTableRow row}}
+    {{/each}}
+   </table>
+</template>
+
+<template name="renderTableRow">
+  <tr>
+    {{#each this}}
+      {{> renderTableCell cell}}
+    {{/each}}
+  </tr>
+</template>
+
+<template name="renderTableCell">
+  <td>{{value}}</td>
+</template>
+
+<template name="table1manual">
+</template>
+
+<template name="table2manual">
+</template>
