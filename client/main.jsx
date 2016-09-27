@@ -215,14 +215,18 @@ Template.reactTables.helpers({
   }
 });
 
-Template.recursive1.helpers({
+Template.recursiveContent.helpers({
   nextDepth() {
     return this.depth - 1;
   },
 });
 
-Template.recursive1.events({
-  'click div'() {
+Template.recursiveFinal.events({
+  'click button'(event, template) {
     console.log('Clicked!');
-  },
+  }
+});
+
+Template.recursive1.onRendered(function () {
+  logTime();
 });

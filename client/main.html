@@ -9,17 +9,22 @@
 
 <template name="sidebar">
   <div class="sidebar">
+    <h4>Blaze</h4>
     <button class="other" type="button">Other</button>
     <button class="table1" type="button">Table 1</button>
     <button class="table2" type="button">Table 2</button>
     <button class="table3" type="button">Table 1 & 2 mix</button>
-    <button class="table1manual" type="button">Table 1 (manual)</button>
-    <button class="table2manual" type="button">Table 2 (manual)</button>
-    <button class="table3manual" type="button">Table 1 &amp; 2 mix (manual)</button>
     <button class="recursive1" type="button">Recursive Template 1</button>
-    <button class="table1react" type="button">Table 1 (react)</button>
-    <button class="table2react" type="button">Table 2 (react)</button>
-    <button class="table3react" type="button">Table 1 &amp; 2 mix (react)</button>
+
+    <h4>Manual DOM</h4>
+    <button class="table1manual" type="button">Table 1</button>
+    <button class="table2manual" type="button">Table 2</button>
+    <button class="table3manual" type="button">Table 1 &amp; 2 mix</button>
+
+    <h4>React</h4>
+    <button class="table1react" type="button">Table 1</button>
+    <button class="table2react" type="button">Table 2</button>
+    <button class="table3react" type="button">Table 1 &amp; 2 mix</button>
   </div>
 </template>
 
@@ -38,7 +43,7 @@
       {{> other}}
     {{/if}}
     {{#if selected 'recursive1'}}
-      {{> recursive1 depth=6}}
+      {{> recursive1}}
     {{/if}}
     {{#if selected 'table1manual'}}
       {{> table1manual}}
@@ -109,16 +114,26 @@
 </template>
 
 <template name="recursive1">
-  <div>
-    <b>Depth {{depth}}</b>
-    {{#if depth}}
-      {{> recursive1 depth=nextDepth}}
-      {{> recursive1 depth=nextDepth}}
-      {{> recursive1 depth=nextDepth}}
-      {{> recursive1 depth=nextDepth}}
-      {{> recursive1 depth=nextDepth}}
-    {{else}}
-      Bottom!
-    {{/if}}
-  </div>
+  {{> recursiveContent depth=6}}
+</template>
+
+<template name="recursiveContent">
+  <ul>
+    <li>
+      <p>Depth {{depth}}</p>
+      {{#if depth}}
+        {{> recursiveContent depth=nextDepth}}
+        {{> recursiveContent depth=nextDepth}}
+        {{> recursiveContent depth=nextDepth}}
+        {{> recursiveContent depth=nextDepth}}
+        {{> recursiveContent depth=nextDepth}}
+      {{else}}
+        {{> recursiveFinal}}
+      {{/if}}
+    </li>
+  </ul>
+</template>
+
+<template name="recursiveFinal">
+  <button>Bottom!</button>
 </template>
