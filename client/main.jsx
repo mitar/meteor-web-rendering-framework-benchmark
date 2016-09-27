@@ -295,3 +295,42 @@ Template.recursiveFinal.events({
 Template.recursive.onRendered(function () {
   logTime();
 });
+
+function renderRecursiveContent(depth) {
+  const ul = document.createElement('ul');
+  const li = document.createElement('li');
+  const p = document.createElement('p');
+  p.textContent = `Depth ${depth}`;
+  li.appendChild(p);
+  if (depth) {
+    li.appendChild(renderRecursiveContent(depth - 1));
+    li.appendChild(renderRecursiveContent(depth - 1));
+    li.appendChild(renderRecursiveContent(depth - 1));
+    li.appendChild(renderRecursiveContent(depth - 1));
+    li.appendChild(renderRecursiveContent(depth - 1));
+  }
+  else {
+    const button = document.createElement('button');
+    button.textContent = 'Bottom!';
+    button.addEventListener('click', function (event) {
+      console.log('Clicked!');
+    });
+    li.appendChild(button);
+  }
+  ul.appendChild(li);
+  return ul;
+}
+
+function renderRecursive(template) {
+  template.ul = renderRecursiveContent(6);
+  template.firstNode.parentNode.insertBefore(template.ul, null);
+}
+
+Template.recursivemanual.onRendered(function () {
+  renderRecursive(this);
+  logTime();
+});
+
+Template.recursivemanual.onDestroyed(function () {
+  this.ul.remove();
+});
