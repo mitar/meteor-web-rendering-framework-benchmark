@@ -13,18 +13,22 @@
     <button class="other">Other</button>
     <button class="table1">Table 1</button>
     <button class="table2">Table 2</button>
-    <button class="table3">Table 1 & 2 mix</button>
+    <button class="table3">Table 1 &amp; 2 mix</button>
     <button class="recursive1">Recursive Template 1</button>
 
     <h4>Manual DOM</h4>
+    <button class="othermanual">Other</button>
     <button class="table1manual">Table 1</button>
     <button class="table2manual">Table 2</button>
     <button class="table3manual">Table 1 &amp; 2 mix</button>
 
     <h4>React</h4>
+    <button class="otherreact">Other</button>
     <button class="table1react">Table 1</button>
     <button class="table2react">Table 2</button>
     <button class="table3react">Table 1 &amp; 2 mix</button>
+
+    <hr/>
   </div>
 </template>
 
@@ -54,8 +58,11 @@
     {{#if selected 'table3manual'}}
       {{> table3manual}}
     {{/if}}
+    {{#if selected 'othermanual'}}
+      {{> othermanual}}
+    {{/if}}
     {{#if selectedReact}}
-      {{> reactTables}}
+      {{> reactContent}}
     {{/if}}
   </div>
 </template>
@@ -107,7 +114,10 @@
 <template name="table3manual">
 </template>
 
-<template name="reactTables">
+<template name="othermanual">
+</template>
+
+<template name="reactContent">
   <div>
     {{> React component=component}}
   </div>

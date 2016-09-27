@@ -5,6 +5,8 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import './main.html';
 
+const TEXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
 const contentSelector = new ReactiveVar('other');
 
 const collection1 = new Mongo.Collection(null);
@@ -96,7 +98,44 @@ class Table extends React.Component {
   }
 }
 
-const TableContainer = createContainer(() => {
+class Other extends React.Component {
+  componentDidMount() {
+    logTime();
+  }
+
+  componentDidUpdate() {
+    logTime();
+  }
+
+  render() {
+    return (
+      <p>{TEXT}</p>
+    );
+  }
+}
+
+class ReactBase extends React.Component {
+  render() {
+    if (this.props.other) {
+      return (
+        <Other />
+      )
+    }
+    else {
+      return (
+        <Table content={this.props.content} />
+      )
+    }
+  }
+}
+
+const ReactContainer = createContainer(() => {
+  if (contentSelector.get() === 'otherreact') {
+    return {
+      other: true
+    }
+  }
+
   let collection;
   if (contentSelector.get() === 'table1react') {
     collection = collection1;
@@ -110,7 +149,7 @@ const TableContainer = createContainer(() => {
   return {
     content: collection.find({}, {sort: {order: 1}}).fetch()
   }
-}, Table);
+}, ReactBase);
 
 let clickTime = new Date().valueOf();
 let previous = null;
@@ -134,7 +173,7 @@ Template.content.helpers({
   },
 
   selectedReact() {
-    return contentSelector.get() === 'table1react' || contentSelector.get() === 'table2react' || contentSelector.get() === 'table3react';
+    return ['table1react', 'table2react', 'table3react', 'otherreact'].indexOf(contentSelector.get()) !== -1;
   }
 });
 
@@ -224,9 +263,20 @@ Template.table3manual.onDestroyed(function () {
   this.table.remove();
 });
 
-Template.reactTables.helpers({
+Template.othermanual.onRendered(function () {
+  this.p = document.createElement('p');
+  this.p.textContent = TEXT;
+  this.firstNode.parentNode.insertBefore(this.p, null);
+  logTime();
+});
+
+Template.othermanual.onDestroyed(function () {
+  this.p.remove();
+});
+
+Template.reactContent.helpers({
   component() {
-    return TableContainer;
+    return ReactContainer;
   }
 });
 
