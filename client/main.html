@@ -10,21 +10,21 @@
 <template name="sidebar">
   <div class="sidebar">
     <h4>Blaze</h4>
-    <button class="other" type="button">Other</button>
-    <button class="table1" type="button">Table 1</button>
-    <button class="table2" type="button">Table 2</button>
-    <button class="table3" type="button">Table 1 & 2 mix</button>
-    <button class="recursive1" type="button">Recursive Template 1</button>
+    <button class="other">Other</button>
+    <button class="table1">Table 1</button>
+    <button class="table2">Table 2</button>
+    <button class="table3">Table 1 & 2 mix</button>
+    <button class="recursive1">Recursive Template 1</button>
 
     <h4>Manual DOM</h4>
-    <button class="table1manual" type="button">Table 1</button>
-    <button class="table2manual" type="button">Table 2</button>
-    <button class="table3manual" type="button">Table 1 &amp; 2 mix</button>
+    <button class="table1manual">Table 1</button>
+    <button class="table2manual">Table 2</button>
+    <button class="table3manual">Table 1 &amp; 2 mix</button>
 
     <h4>React</h4>
-    <button class="table1react" type="button">Table 1</button>
-    <button class="table2react" type="button">Table 2</button>
-    <button class="table3react" type="button">Table 1 &amp; 2 mix</button>
+    <button class="table1react">Table 1</button>
+    <button class="table2react">Table 2</button>
+    <button class="table3react">Table 1 &amp; 2 mix</button>
   </div>
 </template>
 
@@ -95,7 +95,7 @@
 </template>
 
 <template name="renderTableCell">
-  <td>{{value}}</td>
+  <td><button>{{value}}</button></td>
 </template>
 
 <template name="table1manual">

@@ -43,9 +43,13 @@ for (let i = 0; i < 1000; i++) {
 }
 
 class TableCell extends React.Component {
+  onClick(event) {
+    console.log('Clicked!');
+  }
+
   render() {
     return (
-      <td>{this.props.cell.value}</td>
+      <td><button onClick={this.onClick}>{this.props.cell.value}</button></td>
     );
   }
 }
@@ -168,13 +172,24 @@ Template.table3.helpers({
   }
 });
 
+Template.renderTableCell.events({
+  'click button'(event, template) {
+    console.log('Clicked!');
+  }
+});
+
 function renderTable(template, collection) {
   template.table = document.createElement('table');
   collection.find({}, {sort: {order: 1}}).forEach(function (doc, i, cursor) {
     const row = document.createElement('tr');
     doc.row.forEach(function (column, j) {
       const cell = document.createElement('td');
-      cell.textContent = column.cell.value;
+      const button = document.createElement('button');
+      button.textContent = column.cell.value;
+      button.addEventListener('click', function (event) {
+        console.log('Clicked!');
+      });
+      cell.appendChild(button);
       row.appendChild(cell);
     });
     template.table.appendChild(row);
