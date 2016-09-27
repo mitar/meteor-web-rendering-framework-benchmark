@@ -292,6 +292,6 @@ Template.recursiveFinal.events({
   }
 });
 
-Template.recursive1.onRendered(function () {
+Template.recursive.onRendered(function () {
   logTime();
 });

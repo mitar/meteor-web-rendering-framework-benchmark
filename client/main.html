@@ -14,7 +14,7 @@
     <button class="table1">Table 1</button>
     <button class="table2">Table 2</button>
     <button class="table3">Table 1 &amp; 2 mix</button>
-    <button class="recursive1">Recursive Template 1</button>
+    <button class="recursive">Recursive</button>
 
     <h4>Manual DOM</h4>
     <button class="othermanual">Other</button>
@@ -46,8 +46,8 @@
     {{#if selected 'other'}}
       {{> other}}
     {{/if}}
-    {{#if selected 'recursive1'}}
-      {{> recursive1}}
+    {{#if selected 'recursive'}}
+      {{> recursive}}
     {{/if}}
     {{#if selected 'table1manual'}}
       {{> table1manual}}
@@ -123,7 +123,7 @@
   </div>
 </template>
 
-<template name="recursive1">
+<template name="recursive">
   {{> recursiveContent depth=6}}
 </template>
 
