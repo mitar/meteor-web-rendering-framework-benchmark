@@ -1,13 +1,16 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Tracker } from 'meteor/tracker';
 import React from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
+import async from 'async';
 
 import './main.html';
 
 const TEXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
-const contentSelector = new ReactiveVar('other');
+const contentSelector = new ReactiveVar('otherblaze');
+const status = new ReactiveVar(null);
 
 const collection1 = new Mongo.Collection(null);
 const collection2 = new Mongo.Collection(null);
@@ -217,17 +220,30 @@ const ReactContainer = createContainer(() => {
 
 let clickTime = new Date().valueOf();
 let previous = null;
+let timingFunction = null;
 
 function logTime() {
   const difference = new Date().valueOf() - clickTime;
   console.log(`Time ${previous} -> ${contentSelector.get()}: ${difference}`);
+  if (timingFunction) timingFunction(difference);
 }
 
 Template.sidebar.events({
   'click button': function (event, template) {
-    clickTime = new Date().valueOf();
-    previous = contentSelector.get();
-    contentSelector.set(event.currentTarget.className);
+    if (event.currentTarget.className === 'benchmark') {
+      doBenchmark();
+    }
+    else {
+      clickTime = new Date().valueOf();
+      previous = contentSelector.get();
+      contentSelector.set(event.currentTarget.className);
+    }
+  }
+});
+
+Template.sidebar.helpers({
+  status() {
+    return status.get();
   }
 });
 
@@ -241,35 +257,35 @@ Template.content.helpers({
   }
 });
 
-Template.table1.onRendered(function () {
+Template.table1blaze.onRendered(function () {
   logTime();
 });
 
-Template.table2.onRendered(function () {
+Template.table2blaze.onRendered(function () {
   logTime();
 });
 
-Template.table3.onRendered(function () {
+Template.table3blaze.onRendered(function () {
   logTime();
 });
 
-Template.other.onRendered(function () {
+Template.otherblaze.onRendered(function () {
   logTime();
 });
 
-Template.table1.helpers({
+Template.table1blaze.helpers({
   content() {
     return collection1.find({}, {sort: {order: 1}});
   }
 });
 
-Template.table2.helpers({
+Template.table2blaze.helpers({
   content() {
     return collection2.find({}, {sort: {order: 1}});
   }
 });
 
-Template.table3.helpers({
+Template.table3blaze.helpers({
   content() {
     return collection3.find({}, {sort: {order: 1}});
   }
@@ -356,7 +372,7 @@ Template.recursiveFinal.events({
   }
 });
 
-Template.recursive.onRendered(function () {
+Template.recursiveblaze.onRendered(function () {
   logTime();
 });
 
@@ -398,3 +414,108 @@ Template.recursivemanual.onRendered(function () {
 Template.recursivemanual.onDestroyed(function () {
   this.ul.remove();
 });
+
+const BENCHMARK_LOOPS = 15;
+
+function doBenchmark() {
+  console.log("Benchmark started.");
+  status.set("Benchmark started.");
+
+  // So that the message above is displayed first.
+  Tracker.flush();
+
+  const results = new Map();
+
+  const queue = async.queue(function(task, callback) {
+    const to = `${task.to}${task.type}`;
+
+    // Initialize.
+    if (!task.from) {
+      // If we are already initialized.
+      if (contentSelector.get() === to) {
+        callback();
+        return;
+      }
+
+      // Otherwise we go to the initial state.
+      timingFunction = function (difference) {
+        // Delay between tasks.
+        Meteor.setTimeout(callback, 3000);
+      };
+      clickTime = new Date().valueOf();
+      previous = contentSelector.get();
+      contentSelector.set(to);
+      return;
+    }
+
+    const from = `${task.from}${task.type}`;
+    const measurement = `${task.from}-${task.to}`;
+
+    if (contentSelector.get() !== from) {
+      callback(new Error(`Invalid state. We should be in '${from}', but we are in '${contentSelector.get()}'.`));
+      return;
+    }
+
+    timingFunction = function (difference) {
+      if (contentSelector.get() !== to) {
+        callback(new Error(`Invalid state. We should be in '${to}', but we are in '${contentSelector.get()}'.`));
+        return;
+      }
+      if (previous !== from) {
+        callback(new Error(`Invalid previous state. It should be '${from}', but it is '${previous}'.`));
+        return;
+      }
+
+      if (!results.has(task.type)) results.set(task.type, new Map());
+      if (!results.get(task.type).has(measurement)) results.get(task.type).set(measurement, []);
+      results.get(task.type).get(measurement).push(difference);
+
+      // Delay between tasks.
+      Meteor.setTimeout(callback, 3000);
+    };
+
+    clickTime = new Date().valueOf();
+    previous = contentSelector.get();
+    contentSelector.set(to);
+  });
+
+  queue.drain = function drain(error) {
+    console.log("Benchmark ended.");
+    status.set("Benchmark ended. Check results in the console.");
+
+    const baseline = new Map();
+
+    for (let [measurement, differences] of results.get('manual')) {
+      const sum = differences.reduce((a, b) => a + b, 0);
+      const average = sum / differences.length;
+      baseline.set(measurement, average);
+    }
+
+    for (let [type, measurements] of results) {
+      for (let [measurement, differences] of measurements) {
+        const sum = differences.reduce((a, b) => a + b, 0);
+        const average = sum / differences.length;
+        console.log("Result", type, measurement, average, average / baseline.get(measurement));
+      }
+    }
+  };
+
+  queue.error = function error(error, task) {
+    console.error(error, task);
+  };
+
+  let type;
+  const types = ['blaze', 'manual', 'react'];
+  while (type = types.shift()) {
+    queue.push({type: type, to: 'other'});
+
+    for (let i = 0; i < BENCHMARK_LOOPS; i++) {
+      queue.push({type: type, from: 'other', to: 'table1'});
+      queue.push({type: type, to: 'other', from: 'table1'});
+    }
+    for (let i = 0; i < BENCHMARK_LOOPS; i++) {
+      queue.push({type: type, from: 'other', to: 'recursive'});
+      queue.push({type: type, to: 'other', from: 'recursive'});
+    }
+  }
+}
