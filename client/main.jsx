@@ -214,3 +214,15 @@ Template.reactTables.helpers({
     return TableContainer;
   }
 });
+
+Template.recursive1.helpers({
+  nextDepth() {
+    return this.depth - 1;
+  },
+});
+
+Template.recursive1.events({
+  'click div'() {
+    console.log('Clicked!');
+  },
+});

@@ -16,6 +16,7 @@
     <button class="table1manual" type="button">Table 1 (manual)</button>
     <button class="table2manual" type="button">Table 2 (manual)</button>
     <button class="table3manual" type="button">Table 1 & 2 mix (manual)</button>
+    <button class="recursive1" type="button">Recursive Template 1</button>
     <button class="table1react" type="button">Table 1 (react)</button>
     <button class="table2react" type="button">Table 2 (react)</button>
     <button class="table3react" type="button">Table 1 & 2 mix (react)</button>
@@ -35,6 +36,9 @@
     {{/if}}
     {{#if selected 'other'}}
       {{> other}}
+    {{/if}}
+    {{#if selected 'recursive1'}}
+      {{> recursive1 depth=6}}
     {{/if}}
     {{#if selected 'table1manual'}}
       {{> table1manual}}
@@ -101,5 +105,20 @@
 <template name="reactTables">
   <div>
     {{> React component=component}}
+  </div>
+</template>
+
+<template name="recursive1">
+  <div>
+    <b>Depth {{depth}}</b>
+    {{#if depth}}
+      {{> recursive1 depth=nextDepth}}
+      {{> recursive1 depth=nextDepth}}
+      {{> recursive1 depth=nextDepth}}
+      {{> recursive1 depth=nextDepth}}
+      {{> recursive1 depth=nextDepth}}
+    {{else}}
+      Bottom!
+    {{/if}}
   </div>
 </template>
