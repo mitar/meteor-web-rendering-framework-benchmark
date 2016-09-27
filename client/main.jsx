@@ -114,11 +114,69 @@ class Other extends React.Component {
   }
 }
 
+class Recursive extends React.Component {
+  onClick(event) {
+    console.log('Clicked!');
+  }
+
+  render() {
+    let content;
+    if (this.props.depth) {
+      content = [
+        <Recursive depth={this.props.depth - 1} key="1" />
+      ,
+        <Recursive depth={this.props.depth - 1} key="2" />
+      ,
+        <Recursive depth={this.props.depth - 1} key="3" />
+      ,
+        <Recursive depth={this.props.depth - 1} key="4" />
+      ,
+        <Recursive depth={this.props.depth - 1} key="5" />
+      ];
+    }
+    else {
+      content = (
+        <button onClick={this.onClick}>Bottom!</button>
+      );
+    }
+
+    return (
+      <ul>
+        <li>
+          <p>Depth {this.props.depth}</p>
+          {content}
+        </li>
+      </ul>
+    )
+  }
+}
+
+class RecursiveBase extends React.Component {
+  componentDidMount() {
+    logTime();
+  }
+
+  componentDidUpdate() {
+    logTime();
+  }
+
+  render() {
+    return (
+      <Recursive depth="6" />
+    )
+  }
+}
+
 class ReactBase extends React.Component {
   render() {
     if (this.props.other) {
       return (
         <Other />
+      )
+    }
+    else if (this.props.recursive) {
+      return (
+        <RecursiveBase />
       )
     }
     else {
@@ -133,6 +191,12 @@ const ReactContainer = createContainer(() => {
   if (contentSelector.get() === 'otherreact') {
     return {
       other: true
+    }
+  }
+
+  if (contentSelector.get() === 'recursivereact') {
+    return {
+      recursive: true
     }
   }
 
@@ -173,7 +237,7 @@ Template.content.helpers({
   },
 
   selectedReact() {
-    return ['table1react', 'table2react', 'table3react', 'otherreact'].indexOf(contentSelector.get()) !== -1;
+    return ['table1react', 'table2react', 'table3react', 'otherreact', 'recursivereact'].indexOf(contentSelector.get()) !== -1;
   }
 });
 
