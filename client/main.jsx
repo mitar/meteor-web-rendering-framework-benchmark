@@ -230,8 +230,17 @@ function logTime() {
 
 Template.sidebar.events({
   'click button': function (event, template) {
-    if (event.currentTarget.className === 'benchmark') {
-      doBenchmark();
+    if (event.currentTarget.className === 'benchmark-all') {
+      doBenchmark(['blaze', 'manual', 'react']);
+    }
+    if (event.currentTarget.className === 'benchmark-blaze') {
+      doBenchmark(['blaze']);
+    }
+    if (event.currentTarget.className === 'benchmark-manual') {
+      doBenchmark(['manual']);
+    }
+    if (event.currentTarget.className === 'benchmark-react') {
+      doBenchmark(['react']);
     }
     else {
       clickTime = new Date().valueOf();
@@ -417,7 +426,7 @@ Template.recursivemanual.onDestroyed(function () {
 
 const BENCHMARK_LOOPS = 15;
 
-function doBenchmark() {
+function doBenchmark(types) {
   console.log("Benchmark started.");
   status.set("Benchmark started.");
 
@@ -485,10 +494,12 @@ function doBenchmark() {
 
     const baseline = new Map();
 
-    for (let [measurement, differences] of results.get('manual')) {
-      const sum = differences.reduce((a, b) => a + b, 0);
-      const average = sum / differences.length;
-      baseline.set(measurement, average);
+    if (results.has('manual')) {
+      for (let [measurement, differences] of results.get('manual')) {
+        const sum = differences.reduce((a, b) => a + b, 0);
+        const average = sum / differences.length;
+        baseline.set(measurement, average);
+      }
     }
 
     for (let [type, measurements] of results) {
@@ -505,7 +516,6 @@ function doBenchmark() {
   };
 
   let type;
-  const types = ['blaze', 'manual', 'react'];
   while (type = types.shift()) {
     queue.push({type: type, to: 'other'});
 
