@@ -3,6 +3,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Tracker } from 'meteor/tracker';
 import React from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
+import Vue from 'vue';
 import async from 'async';
 
 import './main.html';
@@ -39,7 +40,7 @@ for (let i = 0; i < 1000; i++) {
       row3.push(doc1);
     }
     else {
-      row3.push(doc2);      
+      row3.push(doc2);
     }
   }
   collection1.insert({row: row1, order: i});
@@ -218,6 +219,210 @@ const ReactContainer = createContainer(() => {
   }
 }, ReactBase);
 
+const VueOther = {
+  name: 'other',
+  render(h) {
+    return h('p', TEXT);
+  },
+  mounted() {
+    logTime();
+  },
+  updated() {
+    logTime();
+  },
+};
+
+const VueTableCell = {
+  name: 'table-cell',
+  props: ['cell'],
+  functional: true,
+  render(h, { props }) {
+    return h('td', [
+      h('button', {
+        on: {
+          click() {
+            console.log('Clicked!');
+          },
+        },
+      }, props.cell.value),
+    ]);
+  },
+};
+
+const VueTableRow = {
+  name: 'table-row',
+  props: ['row'],
+  functional: true,
+  render(h, { props }) {
+    return h('tr',
+      props.row.map(doc => h(VueTableCell, {
+        props: {
+          cell: doc.cell,
+        },
+        key: doc._id,
+      }))
+    );
+  },
+};
+
+const VueTable = {
+  name: 'table',
+  props: ['content'],
+  render(h) {
+    return h('table', [
+      h('tbody',
+        this.content.map(doc => h(VueTableRow, {
+          props: {
+            row: doc.row,
+          },
+          key: doc._id,
+        }))
+      ),
+    ])
+  },
+  mounted() {
+    logTime();
+  },
+  updated() {
+    logTime();
+  },
+};
+
+const VueRecursive = {
+  name: 'recursive',
+  functional: true,
+  props: ['depth'],
+  render(h, { props }) {
+    let content;
+    if(props.depth) {
+      content = [
+        h(VueRecursive, {
+          props: {
+            depth: props.depth - 1,
+          },
+          key: 1,
+        }),
+        h(VueRecursive, {
+          props: {
+            depth: props.depth - 1,
+          },
+          key: 2,
+        }),
+        h(VueRecursive, {
+          props: {
+            depth: props.depth - 1,
+          },
+          key: 3,
+        }),
+        h(VueRecursive, {
+          props: {
+            depth: props.depth - 1,
+          },
+          key: 4,
+        }),
+        h(VueRecursive, {
+          props: {
+            depth: props.depth - 1,
+          },
+          key: 5,
+        }),
+      ];
+    } else {
+      content = h('button', {
+        on: {
+          click() {
+            console.log('Clicked!');
+          },
+        },
+      }, 'Bottom!');
+    }
+    return h('ul', [
+      h('li', [
+        h('p', `Depth ${props.depth}`),
+        content,
+      ])
+    ])
+  },
+};
+
+const VueRecursiveBase = {
+  name: 'recursive-base',
+  render(h) {
+    return h(VueRecursive, {
+      props: {
+        depth: 6,
+      },
+    });
+  },
+  mounted() {
+    logTime();
+  },
+  updated() {
+    logTime();
+  },
+};
+
+
+
+let vue;
+
+Template.vueContent.onRendered(function() {
+  vue = new Vue({
+    name: 'vue-base',
+    el: '#vue',
+    render(h) {
+      if(this.type === 'other') {
+        return h(VueOther);
+      } else if(this.type === 'recursive') {
+        return h(VueRecursiveBase);
+      } else if(this.type === 'table') {
+        return h(VueTable, {
+          props: {
+            content: this.content,
+          },
+        });
+      } else {
+        return h('p', 'Wrong type');
+      }
+    },
+    meteor: {
+      type() {
+        const selector = contentSelector.get();
+        if(selector === 'othervue') {
+          return 'other';
+        } else if(selector === 'recursivevue') {
+          return 'recursive';
+        } else {
+          return 'table';
+        }
+      },
+      content() {
+        const selector = contentSelector.get();
+        let collection;
+        if (selector === 'table1vue') {
+          collection = collection1;
+        } else if (selector === 'table2vue') {
+          collection = collection2;
+        } else if (selector === 'table3vue') {
+          collection = collection3;
+        } else {
+          return null;
+        }
+        // Optimization of the Meteor data with Object.freeze
+        // because we know it's the source of truth
+        // and we don't need vue to setup reactivity on every
+        // nested object, Tracker will take care of the reactivity
+        // This increase speed ~2 times
+        return Object.freeze(collection.find({}, {sort: {order: 1}}).fetch());
+      },
+    },
+  })
+});
+
+Template.vueContent.onDestroyed(function() {
+  vue.$destroy();
+});
+
 let clickTime = new Date().valueOf();
 let previous = null;
 let timingFunction = null;
@@ -231,7 +436,7 @@ function logTime() {
 Template.sidebar.events({
   'click button': function (event, template) {
     if (event.currentTarget.className === 'benchmark-all') {
-      doBenchmark(['blaze', 'manual', 'react']);
+      doBenchmark(['blaze', 'manual', 'react', 'vue']);
     }
     if (event.currentTarget.className === 'benchmark-blaze') {
       doBenchmark(['blaze']);
@@ -241,6 +446,9 @@ Template.sidebar.events({
     }
     if (event.currentTarget.className === 'benchmark-react') {
       doBenchmark(['react']);
+    }
+    if (event.currentTarget.className === 'benchmark-vue') {
+      doBenchmark(['vue']);
     }
     else {
       clickTime = new Date().valueOf();
@@ -263,7 +471,11 @@ Template.content.helpers({
 
   selectedReact() {
     return ['table1react', 'table2react', 'table3react', 'otherreact', 'recursivereact'].indexOf(contentSelector.get()) !== -1;
-  }
+  },
+
+  selectedVue() {
+    return ['table1vue', 'table2vue', 'table3vue', 'othervue', 'recursivevue'].indexOf(contentSelector.get()) !== -1;
+  },
 });
 
 Template.table1blaze.onRendered(function () {
