@@ -8,9 +8,10 @@ import async from 'async';
 
 import './main.html';
 
+import { contentSelector, state, logTime } from './timing';
+
 const TEXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
-const contentSelector = new ReactiveVar('otherblaze');
 const status = new ReactiveVar(null);
 
 const collection1 = new Mongo.Collection(null);
@@ -419,20 +420,62 @@ Template.functionalVueContent.onDestroyed(function() {
   this.vue.$destroy();
 });
 
-let clickTime = new Date().valueOf();
-let previous = null;
-let timingFunction = null;
+Template.vueContent.onRendered(function() {
+  this.vue = new Vue({
+    name: 'vue-base',
+    el: '#vue',
+    render(h) {
+      if(this.type === 'other') {
+        return h(Vue.component('other'));
+      } else if(this.type === 'recursive') {
+        return h(Vue.component('recursive'));
+      } else if(this.type === 'table') {
+        return h(Vue.component('render-table'), {
+          props: {
+            content: this.content,
+          },
+        });
+      } else {
+        return h('p', 'Wrong type');
+      }
+    },
+    meteor: {
+      type() {
+        const selector = contentSelector.get();
+        if(selector === 'othervue') {
+          return 'other';
+        } else if(selector === 'recursivevue') {
+          return 'recursive';
+        } else {
+          return 'table';
+        }
+      },
+      content() {
+        const selector = contentSelector.get();
+        let collection;
+        if (selector === 'table1vue') {
+          collection = collection1;
+        } else if (selector === 'table2vue') {
+          collection = collection2;
+        } else if (selector === 'table3vue') {
+          collection = collection3;
+        } else {
+          return null;
+        }
+        return collection.find({}, {sort: {order: 1}}).fetch();
+      },
+    },
+  })
+});
 
-function logTime() {
-  const difference = new Date().valueOf() - clickTime;
-  console.log(`Time ${previous} -> ${contentSelector.get()}: ${difference}`);
-  if (timingFunction) timingFunction(difference);
-}
+Template.vueContent.onDestroyed(function() {
+  this.vue.$destroy();
+});
 
 Template.sidebar.events({
   'click button': function (event, template) {
     if (event.currentTarget.className === 'benchmark-all') {
-      doBenchmark(['blaze', 'manual', 'react', 'functionalvue']);
+      doBenchmark(['blaze', 'manual', 'react', 'functionalvue', 'vue']);
     }
     if (event.currentTarget.className === 'benchmark-blaze') {
       doBenchmark(['blaze']);
@@ -446,9 +489,12 @@ Template.sidebar.events({
     if (event.currentTarget.className === 'benchmark-functionalvue') {
       doBenchmark(['functionalvue']);
     }
+    if (event.currentTarget.className === 'benchmark-vue') {
+      doBenchmark(['vue']);
+    }
     else {
-      clickTime = new Date().valueOf();
-      previous = contentSelector.get();
+      state.clickTime = new Date().valueOf();
+      state.previous = contentSelector.get();
       contentSelector.set(event.currentTarget.className);
     }
   }
@@ -471,6 +517,10 @@ Template.content.helpers({
 
   selectedFunctionalVue() {
     return ['table1functionalvue', 'table2functionalvue', 'table3functionalvue', 'otherfunctionalvue', 'recursivefunctionalvue'].indexOf(contentSelector.get()) !== -1;
+  },
+
+  selectedVue() {
+    return ['table1vue', 'table2vue', 'table3vue', 'othervue', 'recursivevue'].indexOf(contentSelector.get()) !== -1;
   },
 });
 
@@ -655,12 +705,12 @@ function doBenchmark(types) {
       }
 
       // Otherwise we go to the initial state.
-      timingFunction = function (difference) {
+      state.timingFunction = function (difference) {
         // Delay between tasks.
         Meteor.setTimeout(callback, 3000);
       };
-      clickTime = new Date().valueOf();
-      previous = contentSelector.get();
+      state.clickTime = new Date().valueOf();
+      state.previous = contentSelector.get();
       contentSelector.set(to);
       return;
     }
@@ -673,13 +723,13 @@ function doBenchmark(types) {
       return;
     }
 
-    timingFunction = function (difference) {
+    state.timingFunction = function (difference) {
       if (contentSelector.get() !== to) {
         callback(new Error(`Invalid state. We should be in '${to}', but we are in '${contentSelector.get()}'.`));
         return;
       }
-      if (previous !== from) {
-        callback(new Error(`Invalid previous state. It should be '${from}', but it is '${previous}'.`));
+      if (state.previous !== from) {
+        callback(new Error(`Invalid state.previous state. It should be '${from}', but it is '${state.previous}'.`));
         return;
       }
 
@@ -691,8 +741,8 @@ function doBenchmark(types) {
       Meteor.setTimeout(callback, 3000);
     };
 
-    clickTime = new Date().valueOf();
-    previous = contentSelector.get();
+    state.clickTime = new Date().valueOf();
+    state.previous = contentSelector.get();
     contentSelector.set(to);
   });
 
