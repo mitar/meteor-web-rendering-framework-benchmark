@@ -362,14 +362,10 @@ const VueRecursiveBase = {
   },
 };
 
-
-
-let vue;
-
-Template.vueContent.onRendered(function() {
-  vue = new Vue({
+Template.functionalVueContent.onRendered(function() {
+  this.vue = new Vue({
     name: 'vue-base',
-    el: '#vue',
+    el: '#functionalvue',
     render(h) {
       if(this.type === 'other') {
         return h(VueOther);
@@ -388,9 +384,9 @@ Template.vueContent.onRendered(function() {
     meteor: {
       type() {
         const selector = contentSelector.get();
-        if(selector === 'othervue') {
+        if(selector === 'otherfunctionalvue') {
           return 'other';
-        } else if(selector === 'recursivevue') {
+        } else if(selector === 'recursivefunctionalvue') {
           return 'recursive';
         } else {
           return 'table';
@@ -399,11 +395,11 @@ Template.vueContent.onRendered(function() {
       content() {
         const selector = contentSelector.get();
         let collection;
-        if (selector === 'table1vue') {
+        if (selector === 'table1functionalvue') {
           collection = collection1;
-        } else if (selector === 'table2vue') {
+        } else if (selector === 'table2functionalvue') {
           collection = collection2;
-        } else if (selector === 'table3vue') {
+        } else if (selector === 'table3functionalvue') {
           collection = collection3;
         } else {
           return null;
@@ -419,8 +415,8 @@ Template.vueContent.onRendered(function() {
   })
 });
 
-Template.vueContent.onDestroyed(function() {
-  vue.$destroy();
+Template.functionalVueContent.onDestroyed(function() {
+  this.vue.$destroy();
 });
 
 let clickTime = new Date().valueOf();
@@ -436,7 +432,7 @@ function logTime() {
 Template.sidebar.events({
   'click button': function (event, template) {
     if (event.currentTarget.className === 'benchmark-all') {
-      doBenchmark(['blaze', 'manual', 'react', 'vue']);
+      doBenchmark(['blaze', 'manual', 'react', 'functionalvue']);
     }
     if (event.currentTarget.className === 'benchmark-blaze') {
       doBenchmark(['blaze']);
@@ -447,8 +443,8 @@ Template.sidebar.events({
     if (event.currentTarget.className === 'benchmark-react') {
       doBenchmark(['react']);
     }
-    if (event.currentTarget.className === 'benchmark-vue') {
-      doBenchmark(['vue']);
+    if (event.currentTarget.className === 'benchmark-functionalvue') {
+      doBenchmark(['functionalvue']);
     }
     else {
       clickTime = new Date().valueOf();
@@ -473,8 +469,8 @@ Template.content.helpers({
     return ['table1react', 'table2react', 'table3react', 'otherreact', 'recursivereact'].indexOf(contentSelector.get()) !== -1;
   },
 
-  selectedVue() {
-    return ['table1vue', 'table2vue', 'table3vue', 'othervue', 'recursivevue'].indexOf(contentSelector.get()) !== -1;
+  selectedFunctionalVue() {
+    return ['table1functionalvue', 'table2functionalvue', 'table3functionalvue', 'otherfunctionalvue', 'recursivefunctionalvue'].indexOf(contentSelector.get()) !== -1;
   },
 });
 

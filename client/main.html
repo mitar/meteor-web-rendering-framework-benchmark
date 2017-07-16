@@ -30,12 +30,12 @@
     <button class="table3react">Table 1 &amp; 2 mix</button>
     <button class="recursivereact">Recursive</button>
 
-    <h4>Vue 2</h4>
-    <button class="othervue">Other</button>
-    <button class="table1vue">Table 1</button>
-    <button class="table2vue">Table 2</button>
-    <button class="table3vue">Table 1 &amp; 2 mix</button>
-    <button class="recursivevue">Recursive</button>
+    <h4>Functional Vue 2</h4>
+    <button class="otherfunctionalvue">Other</button>
+    <button class="table1functionalvue">Table 1</button>
+    <button class="table2functionalvue">Table 2</button>
+    <button class="table3functionalvue">Table 1 &amp; 2 mix</button>
+    <button class="recursivefunctionalvue">Recursive</button>
 
     <hr/>
 
@@ -44,7 +44,7 @@
       <button class="benchmark-blaze">Benchmark Blaze</button>
       <button class="benchmark-manual">Benchmark manual</button>
       <button class="benchmark-react">Benchmark React</button>
-      <button class="benchmark-vue">Benchmark Vue 2</button>
+      <button class="benchmark-functionalvue">Benchmark Functional Vue 2</button>
     </p>
     {{#if status}}
       <p>{{status}}</p>
@@ -89,8 +89,8 @@
     {{#if selectedReact}}
       {{> reactContent}}
     {{/if}}
-    {{#if selectedVue}}
-      {{> vueContent}}
+    {{#if selectedFunctionalVue}}
+      {{> functionalVueContent}}
     {{/if}}
   </div>
 </template>
@@ -154,8 +154,8 @@
   </div>
 </template>
 
-<template name="vueContent">
-  <div id="vue"></div>
+<template name="functionalVueContent">
+  <div id="functionalvue"></div>
 </template>
 
 <template name="recursiveblaze">
