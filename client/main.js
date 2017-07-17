@@ -107,7 +107,7 @@ function renderOne(backendId, selection, callback) {
 }
 
 function benchmark(backends) {
-  console.log("Benchmark started.");
+  console.log("Benchmark started.", new Date());
 
   const results = new Map();
 
@@ -128,7 +128,7 @@ function benchmark(backends) {
   });
 
   queue.drain = function drain(error) {
-    console.log("Benchmark ended.");
+    console.log("Benchmark ended.", new Date());
     if (error) {
       console.error("Benchmark error", error);
       return;
