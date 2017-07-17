@@ -1,199 +1,30 @@
 <head>
-  <title>meteor-blaze-benchmark</title>
+  <title>meteor-web-rendering-framework-benchmark</title>
 </head>
 
 <body>
   {{> sidebar}}
-  {{> content}}
+  <div id="content"></div>
 </body>
 
 <template name="sidebar">
   <div class="sidebar">
-    <h4>Blaze</h4>
-    <button class="otherblaze">Other</button>
-    <button class="table1blaze">Table 1</button>
-    <button class="table2blaze">Table 2</button>
-    <button class="table3blaze">Table 1 &amp; 2 mix</button>
-    <button class="recursiveblaze">Recursive</button>
-
-    <h4>Manual DOM</h4>
-    <button class="othermanual">Other</button>
-    <button class="table1manual">Table 1</button>
-    <button class="table2manual">Table 2</button>
-    <button class="table3manual">Table 1 &amp; 2 mix</button>
-    <button class="recursivemanual">Recursive</button>
-
-    <h4>React</h4>
-    <button class="otherreact">Other</button>
-    <button class="table1react">Table 1</button>
-    <button class="table2react">Table 2</button>
-    <button class="table3react">Table 1 &amp; 2 mix</button>
-    <button class="recursivereact">Recursive</button>
-
-    <h4>Functional Vue 2</h4>
-    <button class="otherfunctionalvue">Other</button>
-    <button class="table1functionalvue">Table 1</button>
-    <button class="table2functionalvue">Table 2</button>
-    <button class="table3functionalvue">Table 1 &amp; 2 mix</button>
-    <button class="recursivefunctionalvue">Recursive</button>
-
-    <h4>Vue 2</h4>
-    <button class="othervue">Other</button>
-    <button class="table1vue">Table 1</button>
-    <button class="table2vue">Table 2</button>
-    <button class="table3vue">Table 1 &amp; 2 mix</button>
-    <button class="recursivevue">Recursive</button>
-
-    <hr/>
-
-    <p>
-      <button class="benchmark-all">Benchmark all</button>
-      <button class="benchmark-blaze">Benchmark Blaze</button>
-      <button class="benchmark-manual">Benchmark manual</button>
-      <button class="benchmark-react">Benchmark React</button>
-      <button class="benchmark-functionalvue">Benchmark Functional Vue 2</button>
-      <button class="benchmark-vue">Benchmark Vue 2</button>
-    </p>
-    {{#if status}}
-      <p>{{status}}</p>
-    {{/if}}
-
-    <hr/>
-  </div>
-</template>
-
-<template name="content">
-  <div class="content">
-    {{#if selected 'table1blaze'}}
-      {{> table1blaze}}
-    {{/if}}
-    {{#if selected 'table2blaze'}}
-      {{> table2blaze}}
-    {{/if}}
-    {{#if selected 'table3blaze'}}
-      {{> table3blaze}}
-    {{/if}}
-    {{#if selected 'otherblaze'}}
-      {{> otherblaze}}
-    {{/if}}
-    {{#if selected 'recursiveblaze'}}
-      {{> recursiveblaze}}
-    {{/if}}
-    {{#if selected 'table1manual'}}
-      {{> table1manual}}
-    {{/if}}
-    {{#if selected 'table2manual'}}
-      {{> table2manual}}
-    {{/if}}
-    {{#if selected 'table3manual'}}
-      {{> table3manual}}
-    {{/if}}
-    {{#if selected 'othermanual'}}
-      {{> othermanual}}
-    {{/if}}
-    {{#if selected 'recursivemanual'}}
-      {{> recursivemanual}}
-    {{/if}}
-    {{#if selectedReact}}
-      {{> reactContent}}
-    {{/if}}
-    {{#if selectedFunctionalVue}}
-      {{> functionalVueContent}}
-    {{/if}}
-    {{#if selectedVue}}
-      {{> vueContent}}
-    {{/if}}
-  </div>
-</template>
-
-<template name="table1blaze">
-  {{> renderTable content}}
-</template>
-
-<template name="table2blaze">
-  {{> renderTable content}}
-</template>
-
-<template name="table3blaze">
-  {{> renderTable content}}
-</template>
-
-<template name="otherblaze">
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-</template>
-
-<template name="renderTable">
-  <table>
-    <tbody>
-      {{#each this}}
-        {{> renderTableRow row}}
-      {{/each}}
-    </tbody>
-   </table>
-</template>
-
-<template name="renderTableRow">
-  <tr>
-    {{#each this}}
-      {{> renderTableCell cell}}
+    <p>Open browser's console for results.</p>
+    {{#each backend in backends}}
+      <h4>{{backend.name}}</h4>
+      <button class="individual" data-selection="other" data-backend="{{backend.id}}">Other</button>
+      <button class="individual" data-selection="table1" data-backend="{{backend.id}}">Table 1</button>
+      <button class="individual" data-selection="table2" data-backend="{{backend.id}}">Table 2</button>
+      <button class="individual" data-selection="table3" data-backend="{{backend.id}}">Table 1 &amp; 2 mix</button>
+      <button class="individual" data-selection="recursive" data-backend="{{backend.id}}">Recursive</button>
     {{/each}}
-  </tr>
-</template>
-
-<template name="renderTableCell">
-  <td><button>{{value}}</button></td>
-</template>
-
-<template name="table1manual">
-</template>
-
-<template name="table2manual">
-</template>
-
-<template name="table3manual">
-</template>
-
-<template name="othermanual">
-</template>
-
-<template name="recursivemanual">
-</template>
-
-<template name="reactContent">
-  <div>
-    {{> React component=component}}
+    <hr/>
+    <p>
+      <button class="measure" data-backend="all">Benchmark All</button>
+      {{#each backend in backends}}
+        <button class="measure" data-backend="{{backend.id}}">Benchmark {{backend.name}}</button>
+      {{/each}}
+    </p>
+    <hr/>
   </div>
-</template>
-
-<template name="functionalVueContent">
-  <div id="functionalvue"></div>
-</template>
-
-<template name="vueContent">
-  <div id="vue"></div>
-</template>
-
-<template name="recursiveblaze">
-  {{> recursiveContent depth=6}}
-</template>
-
-<template name="recursiveContent">
-  <ul>
-    <li>
-      <p>Depth {{depth}}</p>
-      {{#if depth}}
-        {{> recursiveContent depth=nextDepth}}
-        {{> recursiveContent depth=nextDepth}}
-        {{> recursiveContent depth=nextDepth}}
-        {{> recursiveContent depth=nextDepth}}
-        {{> recursiveContent depth=nextDepth}}
-      {{else}}
-        {{> recursiveFinal}}
-      {{/if}}
-    </li>
-  </ul>
-</template>
-
-<template name="recursiveFinal">
-  <button>Bottom!</button>
 </template>

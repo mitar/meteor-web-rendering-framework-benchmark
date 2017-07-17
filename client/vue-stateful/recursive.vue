@@ -3,15 +3,15 @@
 </template>
 
 <script>
-  import { logTime } from './timing';
+  import profile from '../profile';
 
   export default {
     mounted() {
-      logTime();
+      profile.logTime();
     },
 
     updated() {
-      logTime();
+      profile.logTime();
     }
   }
 </script>

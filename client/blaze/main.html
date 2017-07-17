@@ -1,0 +1,76 @@
+<template name="blazeOther">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</template>
+
+<template name="blazeRenderTable">
+  <table>
+    <tbody>
+      {{#each doc in this}}
+        {{> blazeRenderTableRow doc.row}}
+      {{/each}}
+    </tbody>
+   </table>
+</template>
+
+<template name="blazeRenderTableRow">
+  <tr>
+    {{#each doc in this}}
+      {{> blazeRenderTableCell doc.cell}}
+    {{/each}}
+  </tr>
+</template>
+
+<template name="blazeRenderTableCell">
+  <td><button>{{value}}</button></td>
+</template>
+
+<template name="blazeRecursive">
+  {{> blazeRecursiveContent depth=6}}
+</template>
+
+<template name="blazeRecursiveContent">
+  <ul>
+    <li>
+      <p>Depth {{depth}}</p>
+      {{#if depth}}
+        {{> blazeRecursiveContent depth=nextDepth}}
+        {{> blazeRecursiveContent depth=nextDepth}}
+        {{> blazeRecursiveContent depth=nextDepth}}
+        {{> blazeRecursiveContent depth=nextDepth}}
+        {{> blazeRecursiveContent depth=nextDepth}}
+      {{else}}
+        {{> blazeRecursiveFinal}}
+      {{/if}}
+    </li>
+  </ul>
+</template>
+
+<template name="blazeRecursiveFinal">
+  <button>Bottom!</button>
+</template>
+
+<template name="blazeTable1">
+  {{> blazeRenderTable content}}
+</template>
+
+<template name="blazeTable2">
+  {{> blazeRenderTable content}}
+</template>
+
+<template name="blazeTable3">
+  {{> blazeRenderTable content}}
+</template>
+
+<template name="blazeMain">
+  {{#if selectedOther}}
+    {{> blazeOther}}
+  {{else if selectedRecursive}}
+    {{> blazeRecursive}}
+  {{else if selectedTable1}}
+    {{> blazeTable1}}
+  {{else if selectedTable2}}
+    {{> blazeTable2}}
+  {{else if selectedTable3}}
+    {{> blazeTable3}}
+  {{/if}}
+</template>

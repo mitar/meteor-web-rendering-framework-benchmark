@@ -7,17 +7,7 @@
 </template>
 
 <script>
-  import { logTime } from './timing';
-
   export default {
-    props: ['content'],
-
-    mounted() {
-      logTime();
-    },
-
-    updated() {
-      logTime();
-    }
+    props: ['content']
   }
 </script>
