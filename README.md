@@ -20,6 +20,22 @@ Results of running it on Google Chrome 59.
 
 <!-- Made with browser window set to 1000px width. -->
 
+Test cases
+----------
+
+* *Other*: A simple paragraph of text.
+* *Table 1* and *Table 2*: A large table of data with many columns and rows. Contains also buttons to test attaching
+(and cleaning) of event handlers. The idea is that, when switching between them, ideally the rendering framework would
+detect that the structure of both tables is the same, and just update content, instead of rebuilding the whole structure
+from scratch. Of course the developer could also just update the data source to help the rendering engine, but in many
+cases user is switching between pages which have the same structure, and apps do not just change the data source, but
+render a new page with same internal components.
+* *Table 1 & 2*: A table where half of the content comes from *Table 1* and half from *Table 2*. One would hope that
+switching between *Table 1 & 2* and *Table 1* or *Table 2* would take half of the time of switching between
+*Table 1* and *Table 2*.
+* *Recursive*: A large recursive structure with event handlers at the end. Both expensive to build and expensive to
+clean.
+
 Running
 -------
 
