@@ -13,9 +13,10 @@ import BlazeComponentsBackend from './blaze-components/main';
 import ManualDomBackend from './manual-dom/main';
 import ReactStatefulBackend from './react-stateful/main';
 import VueStatefulBackend from './vue-stateful/main';
+import VueStatelessBackend from './vue-stateless/main';
 
 const BENCHMARK_LOOPS = 15;
-const BACKENDS = [BlazeBackend, BlazeComponentsBackend, ManualDomBackend, ReactStatefulBackend, VueStatefulBackend];
+const BACKENDS = [BlazeBackend, BlazeComponentsBackend, ManualDomBackend, ReactStatefulBackend, VueStatefulBackend, VueStatelessBackend];
 
 let latest = {
   backend: null,
