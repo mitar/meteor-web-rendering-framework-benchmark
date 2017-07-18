@@ -1,3 +1,4 @@
+import { Blaze } from 'meteor/blaze';
 import { BlazeComponent } from 'meteor/peerlibrary:blaze-components';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Tracker } from 'meteor/tracker';
@@ -137,8 +138,7 @@ export default class {
 
   constructor(parent, before) {
     this.selection = new ReactiveVar(null);
-    this.component = Main.renderComponent();
-    Blaze.renderWithData(this.component, () => {
+    this.view = Blaze.renderWithData(Main.renderComponent(), () => {
       return {
         selection: this.selection.get()
       }
@@ -151,9 +151,9 @@ export default class {
   }
 
   cleanup() {
-    if (this.component) {
-      this.component.removeComponent();
-      this.component = null;
+    if (this.view) {
+      Blaze.remove(this.view);
+      this.view = null;
     }
   }
 }
