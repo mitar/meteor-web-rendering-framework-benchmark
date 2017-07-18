@@ -18,6 +18,8 @@ Results of running it on Google Chrome 59.
 
 
 
+<!-- Made with browser window set to 1000px width. -->
+
 Running
 -------
 
