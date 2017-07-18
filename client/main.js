@@ -9,12 +9,13 @@ import profile from './profile';
 import './main.html';
 
 import BlazeBackend from './blaze/main';
+import BlazeComponentsBackend from './blaze-components/main';
 import ManualDomBackend from './manual-dom/main';
 import ReactStatefulBackend from './react-stateful/main';
 import VueStatefulBackend from './vue-stateful/main';
 
 const BENCHMARK_LOOPS = 15;
-const BACKENDS = [BlazeBackend, ManualDomBackend, ReactStatefulBackend, VueStatefulBackend];
+const BACKENDS = [BlazeBackend, BlazeComponentsBackend, ManualDomBackend, ReactStatefulBackend, VueStatefulBackend];
 
 let latest = {
   backend: null,
@@ -81,7 +82,7 @@ function computeMedian(sortedValues) {
 }
 
 function computeSummaries(values) {
-  values.sort();
+  values.sort((a, b) => a - b);
 
   const minimum = values[0];
   const maximum = values[values.length - 1];
