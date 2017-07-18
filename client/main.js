@@ -134,18 +134,21 @@ Template.sidebar.onRendered(function () {
         animation: false
       },
       title: {
-        text: 'Benchmark for web rendering frameworks available in Meteor'
+        text: "Benchmark for web rendering frameworks available in Meteor"
       },
       credits: {
         enabled: false
       },
       xAxis: {
-        categories
+        categories,
+        title: {
+          text: "Switching between test cases"
+        }
       },
       yAxis: {
         min: 1,
         title: {
-          text: 'Time to render (less is better) [ms]'
+          text: "Time to render (less is better) [ms]"
         }
       },
       tooltip: {
@@ -299,6 +302,11 @@ function benchmark(backends) {
 
     for (let i = 0; i < BENCHMARK_LOOPS; i++) {
       queue.push({backendId: backend.getId(), selection: 'table3'});
+      queue.push({backendId: backend.getId(), selection: 'table1'});
+    }
+
+    for (let i = 0; i < BENCHMARK_LOOPS; i++) {
+      queue.push({backendId: backend.getId(), selection: 'table2'});
       queue.push({backendId: backend.getId(), selection: 'table1'});
     }
   }
