@@ -3,10 +3,10 @@ Benchmark for web rendering frameworks available in Meteor
 
 This benchmark tries to compare various reactive rendering frameworks available in Meteor.
 It focuses on rendering large chunks of content and measuring how long it takes for them to
-appear in DOM. The rationale is that the user cares about delays in such rendering the most
+appear in DOM. The rationale is that the user cares the most about delays in such rendering
 because it is often the result of their actions, like clicking on a link and waiting for a new
 page to render. On the other hand, updates to existing content coming from changes to data
-has many other delays already (like changes being detected and propagated to the client) and
+have many other delays already (like changes being detected and propagated to the client) and
 user also in most cases does not know when the change really occurred, to be able to perceive
 a delay. Of course, performance of such updates is important as well and benchmark will include
 them in the future ([#4](https://github.com/mitar/meteor-web-rendering-framework-benchmark/issues/4)).
