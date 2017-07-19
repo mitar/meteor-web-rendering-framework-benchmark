@@ -14,9 +14,17 @@ them in the future ([#4](https://github.com/mitar/meteor-web-rendering-framework
 Results
 -------
 
-Results of running it on Google Chrome 59.
+![](.results/all.png)
 
+![](.results/without-blaze-components.png)
 
+![](.results/without-blaze.png)
+
+![](.results/dom-stateless-vue.png)
+
+![](.results/stateful-react-stateful-vue.png)
+
+Results of running it on Google Chrome v59.
 
 <!-- Made with browser window set to 1000px width. -->
 
