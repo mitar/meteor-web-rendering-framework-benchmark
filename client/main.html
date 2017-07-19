@@ -9,7 +9,7 @@
 
 <template name="sidebar">
   <div class="sidebar">
-    <p>Open browser's console to see progress and results during the benchmark. Results will appear below only after the benchmark finishes. It can take an hour or so for benchmark to finish.</p>
+    <p>Open browser's console to see progress and results during the benchmark. Results will appear below only after the benchmark finishes. It can take an hour or so for benchmark for all frameworks to finish.</p>
     {{#each backend in backends}}
       <h4>{{backend.name}}</h4>
       <button class="individual" data-selection="other" data-backend="{{backend.id}}">Other</button>

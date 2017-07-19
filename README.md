@@ -50,7 +50,8 @@ and benchmarks. During the benchmark, you can follow progress in the console (to
 display progress), and at the end a chart like the one above will be shown.
 
 Benchmark seems pretty sensitive to load on the computer where is being run so it is best to not do anything
-else and keep the browser tab focuses and visible during the whole run (which can take an hour or so).
+else and keep the browser tab focuses and visible during the whole run (which can take an hour or so for all
+frameworks).
 
 Contributing
 ------------
