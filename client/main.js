@@ -4,6 +4,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import async from 'async';
 import Highcharts from 'highcharts-more-node';
 
+import collections from './collections';
 import profile from './profile';
 
 import './main.html';
@@ -24,6 +25,7 @@ let latest = {
 };
 
 const renderResults = new ReactiveVar(new Map());
+const renderMinimongoBaseline = new ReactiveVar(null);
 
 let inProgress = false;
 
@@ -149,7 +151,19 @@ Template.sidebar.onRendered(function () {
         min: 1,
         title: {
           text: "Time to render (less is better) [ms]"
-        }
+        },
+        plotLines: [{
+          value: renderMinimongoBaseline.get(),
+          color: 'lightblue',
+          width: 1,
+          label: {
+            text: `Minimongo data fetch (mean): ${Math.round(renderMinimongoBaseline.get())} ms`,
+            align: 'center',
+            style: {
+              color: 'lightblue'
+            }
+          }
+        }]
       },
       tooltip: {
         valueSuffix: ' ms'
@@ -261,6 +275,21 @@ function benchmark(backends) {
       return;
     }
 
+    console.log("Computing minimongo baseline.", new Date());
+
+    const minimongoBaseline = [];
+    for (let i = 0; i < BENCHMARK_LOOPS; i++) {
+      let start = new Date().valueOf();
+      collections[i % collections.length].find({}, {sort: {order: 1}}).fetch();
+      minimongoBaseline.push(new Date().valueOf() - start);
+    }
+
+    console.log("Done.", new Date());
+
+    const minimongoSum = minimongoBaseline.reduce((a, b) => a + b, 0);
+    const minimongoAverage = minimongoSum / minimongoBaseline.length;
+    console.log("Result", 'minimongo', minimongoAverage);
+
     const baseline = new Map();
 
     if (results.has('manual')) {
@@ -280,6 +309,7 @@ function benchmark(backends) {
     }
 
     renderResults.set(results);
+    renderMinimongoBaseline.set(minimongoAverage);
   };
 
   queue.error = function error(error, task) {
