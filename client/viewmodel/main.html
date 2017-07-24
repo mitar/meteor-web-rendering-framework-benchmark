@@ -14,8 +14,8 @@
 
 <template name="viewModelRenderTableRow">
   <tr>
-    {{#each doc in this}}
-      {{> viewModelRenderTableCell doc.cell}}
+    {{#each this}}
+      {{> viewModelRenderTableCell this.cell}}
     {{/each}}
   </tr>
 </template>
