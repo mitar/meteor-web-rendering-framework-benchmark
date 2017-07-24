@@ -43,6 +43,10 @@ jquery@1.11.10
 launch-screen@1.1.1
 livedata@1.0.18
 logging@1.1.17
+manuel:isdev@1.0.0
+manuel:reactivearray@1.0.5
+manuel:viewmodel@6.3.0
+manuel:viewmodel-debug@2.7.1
 meteor@1.7.0
 meteor-base@1.1.0
 minifier-css@1.2.16
@@ -67,10 +71,12 @@ promise@0.8.9
 random@1.0.10
 react-meteor-data@0.2.12
 react-template-helper@0.2.9
+reactive-dict@1.1.9
 reactive-var@1.0.11
 reload@1.1.11
 retry@1.0.9
 routepolicy@1.0.12
+sha@1.0.9
 shell-server@0.2.4
 spacebars@1.0.15
 spacebars-compiler@1.1.2
