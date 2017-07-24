@@ -18,6 +18,7 @@ import VueStatefulBackend from './vue-stateful/main';
 import VueStatelessBackend from './vue-stateless/main';
 
 const BENCHMARK_LOOPS = 15;
+const BENCHMARK_LOOPS_FAST_MODE = 2;
 const BACKENDS = [BlazeBackend, ViewModelBackend, BlazeComponentsBackend, ManualDomBackend, ReactStatefulBackend, VueStatefulBackend, VueStatelessBackend];
 
 let latest = {
@@ -25,6 +26,7 @@ let latest = {
   selection: null,
 };
 
+const isFastModeEnabled = new ReactiveVar(false);
 const renderResults = new ReactiveVar(new Map());
 const renderMinimongoBaseline = new ReactiveVar(null);
 
@@ -48,6 +50,10 @@ Template.sidebar.events({
     }
     benchmark(backends);
   },
+
+  'click input.fastmode'(event, template) {
+    isFastModeEnabled.set(!isFastModeEnabled.get());
+  }
 });
 
 Template.sidebar.helpers({
@@ -55,6 +61,10 @@ Template.sidebar.helpers({
     return BACKENDS.map((backend) => {
       return {id: backend.getId(), name: backend.getName()};
     });
+  },
+
+  isFastModeEnabled() {
+    return isFastModeEnabled.get();
   },
 
   style() {
@@ -249,7 +259,10 @@ function benchmark(backends) {
   renderResults.set(new Map());
   Tracker.flush();
 
-  console.log("Benchmark started.", new Date());
+  // Use fast or slow mode
+  const loops = isFastModeEnabled.get() ? BENCHMARK_LOOPS_FAST_MODE : BENCHMARK_LOOPS;
+
+  console.log(`Benchmark started using ${loops} loops.`, new Date());
 
   const results = new Map();
 
@@ -279,7 +292,7 @@ function benchmark(backends) {
     console.log("Computing minimongo baseline.", new Date());
 
     const minimongoBaseline = [];
-    for (let i = 0; i < BENCHMARK_LOOPS; i++) {
+    for (let i = 0; i < loops; i++) {
       let start = new Date().valueOf();
       collections[i % collections.length].find({}, {sort: {order: 1}}).fetch();
       minimongoBaseline.push(new Date().valueOf() - start);
@@ -320,23 +333,23 @@ function benchmark(backends) {
   for (let backend of backends) {
     queue.push({backendId: backend.getId(), selection: 'other', ignore: true});
 
-    for (let i = 0; i < BENCHMARK_LOOPS; i++) {
+    for (let i = 0; i < loops; i++) {
       queue.push({backendId: backend.getId(), selection: 'table1'});
       queue.push({backendId: backend.getId(), selection: 'other'});
     }
-    for (let i = 0; i < BENCHMARK_LOOPS; i++) {
+    for (let i = 0; i < loops; i++) {
       queue.push({backendId: backend.getId(), selection: 'recursive'});
       queue.push({backendId: backend.getId(), selection: 'other'});
     }
 
     queue.push({backendId: backend.getId(), selection: 'table1', ignore: true});
 
-    for (let i = 0; i < BENCHMARK_LOOPS; i++) {
+    for (let i = 0; i < loops; i++) {
       queue.push({backendId: backend.getId(), selection: 'table3'});
       queue.push({backendId: backend.getId(), selection: 'table1'});
     }
 
-    for (let i = 0; i < BENCHMARK_LOOPS; i++) {
+    for (let i = 0; i < loops; i++) {
       queue.push({backendId: backend.getId(), selection: 'table2'});
       queue.push({backendId: backend.getId(), selection: 'table1'});
     }

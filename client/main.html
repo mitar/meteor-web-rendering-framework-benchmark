@@ -12,17 +12,22 @@
     <p>Open browser's console to see progress and results during the benchmark. Results will appear below only after the benchmark finishes. It can take an hour or so for benchmark for all frameworks to finish.</p>
     {{#each backend in backends}}
       <h4>{{backend.name}}</h4>
-      <button class="individual" data-selection="other" data-backend="{{backend.id}}">Other</button>
-      <button class="individual" data-selection="table1" data-backend="{{backend.id}}">Table 1</button>
-      <button class="individual" data-selection="table2" data-backend="{{backend.id}}">Table 2</button>
-      <button class="individual" data-selection="table3" data-backend="{{backend.id}}">Table 1 &amp; 2 mix</button>
-      <button class="individual" data-selection="recursive" data-backend="{{backend.id}}">Recursive</button>
+      <button class="individual" type="button" data-selection="other" data-backend="{{backend.id}}">Other</button>
+      <button class="individual" type="button" data-selection="table1" data-backend="{{backend.id}}">Table 1</button>
+      <button class="individual" type="button" data-selection="table2" data-backend="{{backend.id}}">Table 2</button>
+      <button class="individual" type="button" data-selection="table3" data-backend="{{backend.id}}">Table 1 &amp; 2 mix</button>
+      <button class="individual" type="button" data-selection="recursive" data-backend="{{backend.id}}">Recursive</button>
     {{/each}}
     <hr/>
     <p>
-      <button class="measure" data-backend="all"><strong>Benchmark All</strong></button>
+      <label>
+        <input class="fastmode" type="checkbox" name="fastmode" value="1" checked={{isFastModeEnabled}}> Use reduced loops for faster benchmarking
+      </label>
+    </p>
+    <p>
+      <button class="measure" type="button" data-backend="all"><strong>Benchmark All</strong></button>
       {{#each backend in backends}}
-        <button class="measure" data-backend="{{backend.id}}">Benchmark {{backend.name}}</button>
+        <button class="measure" type="button" data-backend="{{backend.id}}">Benchmark {{backend.name}}</button>
       {{/each}}
     </p>
     <div id="results" {{style}}></div>
