@@ -10,6 +10,7 @@ import profile from './profile';
 import './main.html';
 
 import BlazeBackend from './blaze/main';
+import ViewModelBackend from './viewmodel/main';
 import BlazeComponentsBackend from './blaze-components/main';
 import ManualDomBackend from './manual-dom/main';
 import ReactStatefulBackend from './react-stateful/main';
@@ -18,8 +19,7 @@ import VueStatelessBackend from './vue-stateless/main';
 
 const BENCHMARK_LOOPS = 15;
 const BENCHMARK_LOOPS_FAST_MODE = 2;
-// @TODO: Add ViewModelBackend
-const BACKENDS = [BlazeBackend, BlazeComponentsBackend, ManualDomBackend, ReactStatefulBackend, VueStatefulBackend, VueStatelessBackend];
+const BACKENDS = [BlazeBackend, ViewModelBackend, BlazeComponentsBackend, ManualDomBackend, ReactStatefulBackend, VueStatefulBackend, VueStatelessBackend];
 
 let latest = {
   backend: null,

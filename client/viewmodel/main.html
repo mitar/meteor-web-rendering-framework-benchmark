@@ -1,0 +1,76 @@
+<template name="viewModelOther">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</template>
+
+<template name="viewModelRenderTable">
+  <table>
+    <tbody>
+      {{#each this}}
+        {{> viewModelRenderTableRow this.row}}
+      {{/each}}
+    </tbody>
+   </table>
+</template>
+
+<template name="viewModelRenderTableRow">
+  <tr>
+    {{#each this}}
+      {{> viewModelRenderTableCell this.cell}}
+    {{/each}}
+  </tr>
+</template>
+
+<template name="viewModelRenderTableCell">
+  <td><button {{b "click: registerClick"}}>{{value}}</button></td>
+</template>
+
+<template name="viewModelRecursive">
+  {{> viewModelRecursiveContent depth=6}}
+</template>
+
+<template name="viewModelRecursiveContent">
+  <ul>
+    <li>
+      <p>Depth {{depth}}</p>
+      {{#if depth}}
+        {{> viewModelRecursiveContent depth=nextDepth}}
+        {{> viewModelRecursiveContent depth=nextDepth}}
+        {{> viewModelRecursiveContent depth=nextDepth}}
+        {{> viewModelRecursiveContent depth=nextDepth}}
+        {{> viewModelRecursiveContent depth=nextDepth}}
+      {{else}}
+        {{> viewModelRecursiveFinal}}
+      {{/if}}
+    </li>
+  </ul>
+</template>
+
+<template name="viewModelRecursiveFinal">
+  <button {{b "click: registerClick"}}>Bottom!</button>
+</template>
+
+<template name="viewModelTable1">
+  {{> viewModelRenderTable content}}
+</template>
+
+<template name="viewModelTable2">
+  {{> viewModelRenderTable content}}
+</template>
+
+<template name="viewModelTable3">
+  {{> viewModelRenderTable content}}
+</template>
+
+<template name="viewModelMain">
+  {{#if selectedOther}}
+    {{> viewModelOther}}
+  {{else if selectedRecursive}}
+    {{> viewModelRecursive}}
+  {{else if selectedTable1}}
+    {{> viewModelTable1}}
+  {{else if selectedTable2}}
+    {{> viewModelTable2}}
+  {{else if selectedTable3}}
+    {{> viewModelTable3}}
+  {{/if}}
+</template>
