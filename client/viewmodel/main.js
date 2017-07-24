@@ -2,7 +2,7 @@ import { Blaze } from 'meteor/blaze';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Template } from 'meteor/templating';
 import { Tracker } from 'meteor/tracker';
-import { viewmodel } from 'meteor/manuel:viewmodel';
+import { ViewModel } from 'meteor/manuel:viewmodel';
 
 import profile from '../profile';
 import collections from '../collections';
